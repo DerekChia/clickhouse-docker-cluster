@@ -1,4 +1,4 @@
-# ClickHouse CLuster Automation
+# ClickHouse Cluster Automation
 
 `export VERSION=22.12; docker-compose up -d`
 
