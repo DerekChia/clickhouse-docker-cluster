@@ -1,8 +1,8 @@
 # exclude everything
-cluster-generated/*
+cluster/*
 
 # exception to the rule
-!cluster-generated/.gitkeep 
+!cluster/.gitkeep 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

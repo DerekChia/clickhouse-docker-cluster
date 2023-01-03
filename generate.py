@@ -1,25 +1,33 @@
-from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
 import shutil
+import argparse
+from pathlib import Path
+from jinja2 import Environment, FileSystemLoader
 
+# general
 version = "22.12"
 shards = 1
-replicas = 5
+replicas = 30
 num_keepers = 3
+
+# resources for each node
+cpus = 8.0
+mem_limit = "8192m"
+
 cluster_name = f"cluster_{shards}S_{replicas}R"
 context = {
     "hostnames": [],
     "server_ids": [],
     "shards": [],
     "replicas": [],
-    "port_ones": [],
-    "port_twos": [],
-    "port_threes": [],
+    "native_protocol_ports": [],
+    "http_api_ports": [],
+    "keeper_ports": [],
 }
 internal_replication = True
-port_one = 9001
-port_two = 8123
-port_three = 9181
+
+native_protocol_port = 9001
+http_api_port = 8123
+keeper_port = 9181
 
 node_count = 0
 for shard in range(1, shards + 1):
@@ -29,24 +37,25 @@ for shard in range(1, shards + 1):
         context["server_ids"].append(f"{node_count}")
         context["shards"].append(f"{shard}")
         context["replicas"].append(f"{replica}")
-        context["port_ones"].append(f"{port_one}")
-        context["port_twos"].append(f"{port_two}")
-        context["port_threes"].append(f"{port_three}")
-        port_one += 1
-        port_two += 1
-        port_three += 1
+        context["native_protocol_ports"].append(f"{native_protocol_port}")
+        context["http_api_ports"].append(f"{http_api_port}")
+        context["keeper_ports"].append(f"{keeper_port}")
+        native_protocol_port += 1
+        http_api_port += 1
+        keeper_port += 1
 
-print(context)
-print(cluster_name)
+# print(context)
+# print(cluster_name)
 
 
-def delete_cluster_generated(cluster_generated_name):
+def _delete_cluster_generated(cluster_generated_name):
     path = Path(cluster_generated_name)
     if path.is_dir():
         shutil.rmtree(path)
 
 
 def create_cluster_generated(cluster_generated_name):
+    _delete_cluster_generated(cluster_generated_name)
     Path(cluster_generated_name).mkdir(parents=True, exist_ok=True)
     Path(f"{cluster_generated_name}/configs").mkdir(parents=True, exist_ok=True)
 
@@ -56,7 +65,7 @@ def generate_docker_compose():
     template = environment.get_template("docker-compose.txt")
 
     filename = f"cluster-generated/docker-compose.yml"
-    content = template.render(context, version=version)
+    content = template.render(context, version=version, cpus=cpus, mem_limit=mem_limit)
     with open(filename, mode="w", encoding="utf-8") as f:
         f.write(content)
 
@@ -141,7 +150,47 @@ def generate_config(context):
 
 
 if __name__ == "__main__":
-    delete_cluster_generated("cluster-generated")
-    create_cluster_generated("cluster-generated")
-    generate_docker_compose()
-    generate_config(context)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        type=float,
+        default=22.12,
+        required=True,
+        help="ClickHouse version",
+    )
+    parser.add_argument(
+        "-s", "--shards", type=int, default=1, required=True, help="Number of shards"
+    )
+    parser.add_argument(
+        "-r",
+        "--replicas",
+        type=int,
+        default=1,
+        required=True,
+        help="Number of replicas",
+    )
+    parser.add_argument(
+        "-k",
+        "--num_keepers",
+        type=int,
+        default=3,
+        required=True,
+        help="Number of Keepers (Min. 3)",
+    )
+
+    parser.add_argument("--cpus", type=int, default=1, help="CPUs for each node")
+    parser.add_argument(
+        "--memory", type=int, default=8192, help="RAM (mb) for each node"
+    )
+
+    parser.add_argument("-d", "--directory", type=str, default="cluster")
+
+    args = parser.parse_args()
+
+    print(f"{args}")
+
+    # create_cluster_generated("cluster-generated")
+    # generate_docker_compose()
+    # generate_config(context)

@@ -4,6 +4,8 @@
 
 `python run.py`
 
+
+```
 sudo apt update && sudo apt upgrade -y
 
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -20,3 +22,13 @@ sudo chmod +x /usr/bin/docker-compose
 git clone https://github.com/DerekChia/clickhouse-docker-cluster
 
 cd clickhouse-docker-cluster
+
+python3 generate.py 
+```
+
+# Experiments (TODO)
+- embedded 3x CHK with CH nodes
+- separate CH Keeper to 3 nodes
+- increase number of CH nodes until CHK cannot keep up, then increase CHK vertically (RAM and CPU)
+- increase tables, parts, partitions, DDLs
+- increase operation_timeout_ms and session_timeout_ms
