@@ -12,9 +12,9 @@
         </coordination_settings>
 
         <raft_configuration>
-        {%- for n in range(server_ids | length) %}
+        {%- for n in range(num_keepers) %}
             <server>
-                <id>{{ server_ids[n] }}</id>
+                <id>{{ n+1 }}</id>
                 <hostname>{{ hostnames[n] }}</hostname>
                 <port>9444</port>
             </server>

@@ -4,7 +4,8 @@ import shutil
 
 version = "22.12"
 shards = 1
-replicas = 4
+replicas = 5
+num_keepers = 3
 cluster_name = f"cluster_{shards}S_{replicas}R"
 context = {
     "hostnames": [],
@@ -79,13 +80,18 @@ def generate_config(context):
     template = environment.get_template("keeper_enable.txt")
 
     for count in range(len(context["hostnames"])):
-        hostname = context["hostnames"][count]
-        server_id = context["server_ids"][count]
+        if count < num_keepers:
+            hostname = context["hostnames"][count]
+            server_id = context["server_ids"][count]
 
-        filename_generated = f"cluster-generated/configs/{hostname}/keeper_enable.xml"
-        content = template.render(context, server_id=server_id)
-        with open(filename_generated, mode="w", encoding="utf-8") as f:
-            f.write(content)
+            filename_generated = (
+                f"cluster-generated/configs/{hostname}/keeper_enable.xml"
+            )
+            content = template.render(
+                context, server_id=server_id, num_keepers=num_keepers
+            )
+            with open(filename_generated, mode="w", encoding="utf-8") as f:
+                f.write(content)
 
     # keeper_use.xml
     template = environment.get_template("keeper_use.txt")
@@ -95,7 +101,7 @@ def generate_config(context):
         server_id = context["server_ids"][count]
 
         filename_generated = f"cluster-generated/configs/{hostname}/keeper_use.xml"
-        content = template.render(context)
+        content = template.render(context, num_keepers=num_keepers)
         with open(filename_generated, mode="w", encoding="utf-8") as f:
             f.write(content)
 

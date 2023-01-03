@@ -27,11 +27,6 @@
                 <hostname>chnode3</hostname>
                 <port>9444</port>
             </server>
-            <server>
-                <id>4</id>
-                <hostname>chnode4</hostname>
-                <port>9444</port>
-            </server>
         </raft_configuration>
     </keeper_server>
 </clickhouse>
