@@ -1,0 +1,25 @@
+<clickhouse>
+	<remote_servers>
+		<cluster_1S_3R>
+			<shard>
+				<internal_replication>true</internal_replication>
+
+				<replica>
+					<host>chnode1</host>
+					<port>9000</port>
+				</replica>
+
+				<replica>
+					<host>chnode2</host>
+					<port>9000</port>
+				</replica>
+
+				<replica>
+					<host>chnode3</host>
+					<port>9000</port>
+				</replica>
+
+			</shard>
+		</cluster_1S_3R>
+	</remote_servers>
+</clickhouse>
