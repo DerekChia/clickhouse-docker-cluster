@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 # general
 version = "22.12"
 shards = 1
-replicas = 30
+replicas = 50
 num_keepers = 3
 
 # resources for each node
@@ -150,47 +150,47 @@ def generate_config(context):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    # parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "-v",
-        "--version",
-        type=float,
-        default=22.12,
-        required=True,
-        help="ClickHouse version",
-    )
-    parser.add_argument(
-        "-s", "--shards", type=int, default=1, required=True, help="Number of shards"
-    )
-    parser.add_argument(
-        "-r",
-        "--replicas",
-        type=int,
-        default=1,
-        required=True,
-        help="Number of replicas",
-    )
-    parser.add_argument(
-        "-k",
-        "--num_keepers",
-        type=int,
-        default=3,
-        required=True,
-        help="Number of Keepers (Min. 3)",
-    )
+    # parser.add_argument(
+    #     "-v",
+    #     "--version",
+    #     type=float,
+    #     default=22.12,
+    #     required=True,
+    #     help="ClickHouse version",
+    # )
+    # parser.add_argument(
+    #     "-s", "--shards", type=int, default=1, required=True, help="Number of shards"
+    # )
+    # parser.add_argument(
+    #     "-r",
+    #     "--replicas",
+    #     type=int,
+    #     default=1,
+    #     required=True,
+    #     help="Number of replicas",
+    # )
+    # parser.add_argument(
+    #     "-k",
+    #     "--num_keepers",
+    #     type=int,
+    #     default=3,
+    #     required=True,
+    #     help="Number of Keepers (Min. 3)",
+    # )
 
-    parser.add_argument("--cpus", type=int, default=1, help="CPUs for each node")
-    parser.add_argument(
-        "--memory", type=int, default=8192, help="RAM (mb) for each node"
-    )
+    # parser.add_argument("--cpus", type=int, default=1, help="CPUs for each node")
+    # parser.add_argument(
+    #     "--memory", type=int, default=8192, help="RAM (mb) for each node"
+    # )
 
-    parser.add_argument("-d", "--directory", type=str, default="cluster")
+    # parser.add_argument("-d", "--directory", type=str, default="cluster")
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    print(f"{args}")
+    # print(f"{args}")
 
-    # create_cluster_generated("cluster-generated")
-    # generate_docker_compose()
-    # generate_config(context)
+    create_cluster_generated("cluster-generated")
+    generate_docker_compose()
+    generate_config(context)
