@@ -64,7 +64,7 @@ def generate_docker_compose():
     environment = Environment(loader=FileSystemLoader("templates/"))
     template = environment.get_template("docker-compose.txt")
 
-    filename = f"cluster-generated/docker-compose.yml"
+    filename = f"cluster/docker-compose.yml"
     content = template.render(context, version=version, cpus=cpus, mem_limit=mem_limit)
     with open(filename, mode="w", encoding="utf-8") as f:
         f.write(content)
@@ -75,14 +75,12 @@ def generate_config(context):
 
     # create configs directory
     for hostname in context["hostnames"]:
-        Path(f"cluster-generated/configs/{hostname}").mkdir(parents=True, exist_ok=True)
+        Path(f"cluster/configs/{hostname}").mkdir(parents=True, exist_ok=True)
 
     # docker_related_config.xml
     filename = f"templates/configs/docker_related_config.xml"
     for hostname in context["hostnames"]:
-        filename_generated = (
-            f"cluster-generated/configs/{hostname}/docker_related_config.xml"
-        )
+        filename_generated = f"cluster/configs/{hostname}/docker_related_config.xml"
         shutil.copyfile(filename, filename_generated)
 
     # keeper_enable.xml
@@ -93,9 +91,7 @@ def generate_config(context):
             hostname = context["hostnames"][count]
             server_id = context["server_ids"][count]
 
-            filename_generated = (
-                f"cluster-generated/configs/{hostname}/keeper_enable.xml"
-            )
+            filename_generated = f"cluster/configs/{hostname}/keeper_enable.xml"
             content = template.render(
                 context, server_id=server_id, num_keepers=num_keepers
             )
@@ -109,7 +105,7 @@ def generate_config(context):
         hostname = context["hostnames"][count]
         server_id = context["server_ids"][count]
 
-        filename_generated = f"cluster-generated/configs/{hostname}/keeper_use.xml"
+        filename_generated = f"cluster/configs/{hostname}/keeper_use.xml"
         content = template.render(context, num_keepers=num_keepers)
         with open(filename_generated, mode="w", encoding="utf-8") as f:
             f.write(content)
@@ -122,7 +118,7 @@ def generate_config(context):
         shard = context["shards"][count]
         replica = context["replicas"][count]
 
-        filename_generated = f"cluster-generated/configs/{hostname}/macros.xml"
+        filename_generated = f"cluster/configs/{hostname}/macros.xml"
         content = template.render(
             cluster_name=cluster_name, shard=shard, replica=replica
         )
@@ -137,7 +133,7 @@ def generate_config(context):
         shard = context["shards"][count]
         replica = context["replicas"][count]
 
-        filename_generated = f"cluster-generated/configs/{hostname}/remote_servers.xml"
+        filename_generated = f"cluster/configs/{hostname}/remote_servers.xml"
         content = template.render(
             context,
             cluster_name=cluster_name,
@@ -191,6 +187,6 @@ if __name__ == "__main__":
 
     # print(f"{args}")
 
-    create_cluster_generated("cluster-generated")
+    create_cluster_generated("cluster")
     generate_docker_compose()
     generate_config(context)
