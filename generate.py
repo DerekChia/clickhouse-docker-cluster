@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 # general
 version = "22.12"
 shards = 1
-replicas = 50
+replicas = 3
 num_keepers = 3
 
 # resources for each node

@@ -1,0 +1,136 @@
+version: "3.9"
+
+services: 
+  keeper1:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-keeper:22.12-alpine
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: keeper1
+    hostname: keeper1
+    ports:
+      - 9181:9181
+      - 9234:9234
+    volumes:
+      - type: volume
+        source: keeper1-config
+        target: /var/lib/clickhouse
+      - "./configs/keeper1/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml"
+  
+  keeper2:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-keeper:22.12-alpine
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: keeper2
+    hostname: keeper2
+    ports:
+      - 9182:9181
+      - 9235:9234
+    volumes:
+      - type: volume
+        source: keeper2-config
+        target: /var/lib/clickhouse
+      - "./configs/keeper2/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml"
+  
+  keeper3:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-keeper:22.12-alpine
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: keeper3
+    hostname: keeper3
+    ports:
+      - 9183:9181
+      - 9236:9234
+    volumes:
+      - type: volume
+        source: keeper3-config
+        target: /var/lib/clickhouse
+      - "./configs/keeper3/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml"
+
+  chnode1:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode1
+    hostname: chnode1
+    ports:
+      - 9001:9000
+      - 8123:8123
+    volumes:
+      - type: volume
+        source: chnode1-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode1:/etc/clickhouse-server/config.d/"
+ 
+  chnode2:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode2
+    hostname: chnode2
+    ports:
+      - 9002:9000
+      - 8124:8123
+    volumes:
+      - type: volume
+        source: chnode2-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode2:/etc/clickhouse-server/config.d/"
+ 
+  chnode3:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 8.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode3
+    hostname: chnode3
+    ports:
+      - 9003:9000
+      - 8125:8123
+    volumes:
+      - type: volume
+        source: chnode3-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode3:/etc/clickhouse-server/config.d/"
+      
+volumes:
+  keeper1-config:
+  keeper2-config:
+  keeper3-config:
+  chnode1-config:
+  chnode2-config:
+  chnode3-config:

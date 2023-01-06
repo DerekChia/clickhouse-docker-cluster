@@ -27,8 +27,12 @@ python3 generate.py
 ```
 
 # Experiments (TODO)
-- embedded 3x CHK with CH nodes
-- separate CH Keeper to 3 nodes
-- increase number of CH nodes until CHK cannot keep up, then increase CHK vertically (RAM and CPU)
-- increase tables, parts, partitions, DDLs
-- increase operation_timeout_ms and session_timeout_ms
+1. embedded 3x CHK with CH nodes
+2. separate CH Keeper to 3 nodes
+3. with 3x CHK, increase number of CH nodes until CHK cannot keep up
+3.1 increase CHK vertically (RAM and CPU)
+3.2 increase number of metadata (increase tables, parts, partitions, DDLs)
+3.3 tuning CHK config: operation_timeout_ms and session_timeout_ms
+4. Do step 3 with ZK
+
+https://clickhouse.com/docs/en/operations/settings/merge-tree-settings/#always_fetch_merged_part
