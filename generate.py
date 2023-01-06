@@ -25,7 +25,7 @@ context = {
 }
 internal_replication = True
 
-native_protocol_port = 9001
+native_protocol_port = 9000
 http_api_port = 8123
 keeper_port = 9181
 
