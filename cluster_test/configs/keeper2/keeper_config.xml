@@ -66,5 +66,14 @@
                 </server>
             </raft_configuration>
     </keeper_server>
+    
+    <prometheus>
+        <endpoint>/metrics</endpoint>
+        <port>9363</port>
+        <metrics>false</metrics>
+        <events>true</events>
+        <asynchronous_metrics>true</asynchronous_metrics>
+        <status_info>false</status_info>
+    </prometheus>
 
 </clickhouse>

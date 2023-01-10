@@ -1,8 +1,8 @@
 <clickhouse>
     <zookeeper>
-        {%- for n in range(num_keepers) %}
-        <node index="{{ server_ids[n] }}">
-            <host>{{ hostnames[n] }}</host>
+        {%- for n in range(keeper_count) %}
+        <node index="{{ n+1 }}">
+            <host>{{ keeper_hostnames[n] }}</host>
             <port>9181</port>
         </node>
         {%- endfor %}

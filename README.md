@@ -1,4 +1,4 @@
-# ClickHouse Cluster Automation
+# ClickHouse Cluster
 
 `export VERSION=22.12; docker-compose up -d`
 
@@ -36,3 +36,6 @@ python3 generate.py
 4. Do step 3 with ZK
 
 https://clickhouse.com/docs/en/operations/settings/merge-tree-settings/#always_fetch_merged_part
+
+# Notes
+- embedded keeper is enabled on first replica in shard by default

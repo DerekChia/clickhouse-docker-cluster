@@ -3,7 +3,7 @@ version: "3.9"
 services: 
   keeper1:
     restart: unless-stopped
-    image: clickhouse/clickhouse-keeper:22.12-alpine
+    image: clickhouse/clickhouse-keeper:head-alpine
     cpus: 8.0
     mem_limit: 8192m
     ulimits:
@@ -16,6 +16,7 @@ services:
     ports:
       - 9181:9181
       - 9234:9234
+      - 9366:9363
     volumes:
       - type: volume
         source: keeper1-config
@@ -24,7 +25,7 @@ services:
   
   keeper2:
     restart: unless-stopped
-    image: clickhouse/clickhouse-keeper:22.12-alpine
+    image: clickhouse/clickhouse-keeper:head-alpine
     cpus: 8.0
     mem_limit: 8192m
     ulimits:
@@ -37,6 +38,7 @@ services:
     ports:
       - 9182:9181
       - 9235:9234
+      - 9367:9363
     volumes:
       - type: volume
         source: keeper2-config
@@ -45,7 +47,7 @@ services:
   
   keeper3:
     restart: unless-stopped
-    image: clickhouse/clickhouse-keeper:22.12-alpine
+    image: clickhouse/clickhouse-keeper:head-alpine
     cpus: 8.0
     mem_limit: 8192m
     ulimits:
@@ -58,6 +60,7 @@ services:
     ports:
       - 9183:9181
       - 9236:9234
+      - 9368:9363
     volumes:
       - type: volume
         source: keeper3-config
@@ -79,6 +82,7 @@ services:
     ports:
       - 9001:9000
       - 8123:8123
+      - 9363:9363
     volumes:
       - type: volume
         source: chnode1-config
@@ -100,6 +104,7 @@ services:
     ports:
       - 9002:9000
       - 8124:8123
+      - 9364:9363
     volumes:
       - type: volume
         source: chnode2-config
@@ -121,12 +126,23 @@ services:
     ports:
       - 9003:9000
       - 8125:8123
+      - 9365:9363
     volumes:
       - type: volume
         source: chnode3-config
         target: /var/lib/clickhouse
       - "./configs/chnode3:/etc/clickhouse-server/config.d/"
-      
+
+  prometheus:
+    restart: unless-stopped
+    image: prom/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - "./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+
 volumes:
   keeper1-config:
   keeper2-config:
