@@ -4,6 +4,9 @@ cluster/*
 # exception to the rule
 !cluster/.gitkeep 
 
+# Mac
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
