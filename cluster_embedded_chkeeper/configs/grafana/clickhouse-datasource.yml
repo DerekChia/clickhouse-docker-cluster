@@ -1,0 +1,72 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: ClickHouse-chnode_with_chkeeper1
+  - name: ClickHouse-chnode_with_chkeeper2
+  - name: ClickHouse-chnode_with_chkeeper3
+  - name: ClickHouse-chnode4
+  - name: ClickHouse-chnode5
+  - name: ClickHouse-chnode6
+
+datasources:
+  - name: ClickHouse-chnode_with_chkeeper1
+    type: grafana-clickhouse-datasource
+    isDefault: 1
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode_with_chkeeper1
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  - name: ClickHouse-chnode_with_chkeeper2
+    type: grafana-clickhouse-datasource
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode_with_chkeeper2
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  - name: ClickHouse-chnode_with_chkeeper3
+    type: grafana-clickhouse-datasource
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode_with_chkeeper3
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  - name: ClickHouse-chnode4
+    type: grafana-clickhouse-datasource
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode4
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  - name: ClickHouse-chnode5
+    type: grafana-clickhouse-datasource
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode5
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  - name: ClickHouse-chnode6
+    type: grafana-clickhouse-datasource
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: chnode6
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 

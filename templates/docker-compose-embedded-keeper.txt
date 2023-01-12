@@ -15,10 +15,10 @@ services:
     container_name: {{ keeper_hostnames[n] }}
     hostname: {{ keeper_hostnames[n] }}
     ports:
-      - {{ native_protocol_ports[n] }}:9000
-      - {{ http_api_ports[n] }}:8123
-      - {{ keeper_ports[n] }}:9181
-      - {{ keeper_raft_ports[n] }}:9234
+      - 9000
+      - 8123
+      - 9181
+      - 9234
     volumes:
       - type: volume
         source: {{ keeper_hostnames[n] }}-config
@@ -39,8 +39,8 @@ services:
     container_name: {{ node_hostnames[n] }}
     hostname: {{ node_hostnames[n] }}
     ports:
-      - {{ native_protocol_ports[ keeper_hostnames|length + n] }}:9000
-      - {{ http_api_ports[ keeper_hostnames|length + n] }}:8123
+      - 9000
+      - 8123
     volumes:
       - type: volume
         source: {{ node_hostnames[n] }}-config

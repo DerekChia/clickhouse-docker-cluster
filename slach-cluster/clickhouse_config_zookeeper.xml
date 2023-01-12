@@ -1,0 +1,7 @@
+<clickhouse>
+    <https_port>8443</https_port>
+    <zookeeper>
+        <node><host>zookeeper</host><port>2181</port></node>
+    </zookeeper>
+    <macros><replica>clickhouse</replica></macros>
+</clickhouse>

@@ -1,0 +1,48 @@
+services:
+  keeper:
+    image: ${KEEPER_IMAGE:-clickhouse/clickhouse-keeper}:${KEEPER_VERSION:-head-alpine}
+    volumes:
+      - ./keeper_config_3_nodes.xml:/etc/clickhouse-keeper/conf.d/keeper_config.xml
+      - /var/lib/clickhouse
+    user: clickhouse
+    environment:
+      SERVERS: "3"
+      RAFT_PORT: "9444"
+    command:
+      - bash
+      - -x
+      - -c
+      - |
+        HOST=`hostname -s` &&
+        DOMAIN=`hostname -d` &&
+        if [[ $$HOST =~ (.*)-([0-9]+)$$ ]]; then
+            NAME=$${BASH_REMATCH[1]}
+            ORD=$${BASH_REMATCH[2]}
+        else
+            echo "Failed to parse name and ordinal of Pod"
+            exit 1
+        fi &&
+        export MY_ID=$$((ORD+1)) &&
+        mkdir -p /tmp/clickhouse-keeper/config.d/ &&
+        {
+          echo "<clickhouse><keeper_server>"
+          echo "<server_id>$${MY_ID}</server_id>"
+          echo "<raft_configuration>"
+          for (( i=1; i<=$$SERVERS; i++ )); do
+              echo "<server><id>$${i}</id><hostname>$$NAME-$$((i-1))</hostname><port>$${RAFT_PORT}</port></server>"
+          done
+          echo "</raft_configuration>"
+          echo "</keeper_server></clickhouse>"
+        } > /tmp/clickhouse-keeper/config.d/generated-keeper-settings.xml &&
+        cat /tmp/clickhouse-keeper/config.d/generated-keeper-settings.xml && 
+        if [[ "1" == "$$MY_ID" ]]; then
+          clickhouse-keeper --config-file=/etc/clickhouse-keeper/keeper_config.xml --force-recovery
+        else
+          clickhouse-keeper --config-file=/etc/clickhouse-keeper/keeper_config.xml
+        fi
+    healthcheck:
+      test: bash -c 'if [[ "$$(echo ruok | nc 127.0.0.1 9181)" == "imok" ]]; then exit 0; else exit 1; fi'
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 2s

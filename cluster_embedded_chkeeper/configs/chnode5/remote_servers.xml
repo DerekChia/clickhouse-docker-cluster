@@ -1,0 +1,33 @@
+<clickhouse>
+	<remote_servers>
+		<cluster_1S_6R>
+			<shard> 
+				<internal_replication>true</internal_replication>
+				<replica>
+					<host>chnode_with_chkeeper1</host>
+					<port>9000</port> 
+				</replica>
+				<replica>
+					<host>chnode_with_chkeeper2</host>
+					<port>9000</port> 
+				</replica>
+				<replica>
+					<host>chnode_with_chkeeper3</host>
+					<port>9000</port> 
+				</replica>
+				<replica>
+					<host>chnode4</host>
+					<port>9000</port> 
+				</replica>
+				<replica>
+					<host>chnode5</host>
+					<port>9000</port> 
+				</replica>
+				<replica>
+					<host>chnode6</host>
+					<port>9000</port> 
+				</replica>
+			</shard>
+		</cluster_1S_6R>
+	</remote_servers>
+</clickhouse>

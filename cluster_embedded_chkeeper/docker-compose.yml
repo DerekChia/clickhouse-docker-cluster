@@ -1,0 +1,185 @@
+version: "3.9"
+
+services: 
+  chnode_with_chkeeper1:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode_with_chkeeper1
+    hostname: chnode_with_chkeeper1
+    ports:
+      - 9181:9181
+      - 9234:9234
+      - 9366:9363
+    volumes:
+      - type: volume
+        source: chnode_with_chkeeper1-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode_with_chkeeper1:/etc/clickhouse-server/config.d/"
+  
+  chnode_with_chkeeper2:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode_with_chkeeper2
+    hostname: chnode_with_chkeeper2
+    ports:
+      - 9182:9181
+      - 9235:9234
+      - 9367:9363
+    volumes:
+      - type: volume
+        source: chnode_with_chkeeper2-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode_with_chkeeper2:/etc/clickhouse-server/config.d/"
+  
+  chnode_with_chkeeper3:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode_with_chkeeper3
+    hostname: chnode_with_chkeeper3
+    ports:
+      - 9183:9181
+      - 9236:9234
+      - 9368:9363
+    volumes:
+      - type: volume
+        source: chnode_with_chkeeper3-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode_with_chkeeper3:/etc/clickhouse-server/config.d/"
+
+  chnode4:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode4
+    hostname: chnode4
+    ports:
+      - 9001:9000
+      - 8123:8123
+      - 9363:9363
+    volumes:
+      - type: volume
+        source: chnode4-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode4:/etc/clickhouse-server/config.d/"
+ 
+  chnode5:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode5
+    hostname: chnode5
+    ports:
+      - 9002:9000
+      - 8124:8123
+      - 9364:9363
+    volumes:
+      - type: volume
+        source: chnode5-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode5:/etc/clickhouse-server/config.d/"
+ 
+  chnode6:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:22.12
+    cpus: 1.0
+    mem_limit: 8192m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: chnode6
+    hostname: chnode6
+    ports:
+      - 9003:9000
+      - 8125:8123
+      - 9365:9363
+    volumes:
+      - type: volume
+        source: chnode6-config
+        target: /var/lib/clickhouse
+      - "./configs/chnode6:/etc/clickhouse-server/config.d/"
+
+  prometheus:
+    restart: unless-stopped
+    image: prom/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - "./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    depends_on:
+      - chnode_with_chkeeper1
+      - chnode_with_chkeeper2
+      - chnode_with_chkeeper3
+      - chnode4
+      - chnode5
+      - chnode6
+
+  grafana:
+    restart: unless-stopped
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+      - GF_LOG_LEVEL=debug
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_ALERTING_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    volumes:
+      - "./configs/grafana/clickhouse-datasource.yml:/etc/grafana/provisioning/datasources/clickhouse-datasource.yml"
+      - "./configs/grafana/clickhouse-dashboard.yml:/etc/grafana/provisioning/dashboards/clickhouse-dashboard.yml"
+      - "./configs/grafana/dashboards:/var/lib/grafana/dashboards"
+    depends_on:
+      - chnode_with_chkeeper1
+      - chnode_with_chkeeper2
+      - chnode_with_chkeeper3
+      - chnode4
+      - chnode5
+      - chnode6
+
+volumes:
+  chnode_with_chkeeper1-config:
+  chnode_with_chkeeper2-config:
+  chnode_with_chkeeper3-config:
+  chnode4-config:
+  chnode5-config:
+  chnode6-config:

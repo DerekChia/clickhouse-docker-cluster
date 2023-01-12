@@ -1,0 +1,26 @@
+services:
+  clickhouse:
+    image: ${CLICKHOUSE_IMAGE:-clickhouse/clickhouse-server}:${CLICKHOUSE_VERSION:-head}
+    depends_on:
+      keeper:
+        condition: service_healthy
+    volumes:
+      - ./clickhouse_config_keeper.xml:/etc/clickhouse-server/config.d/clickhouse_config_keeper.xml
+      - ./:/var/log/clickhouse-server/
+    healthcheck:
+      test: wget http://localhost:8123/ping
+      interval: 3s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
+  keeper:
+    image: ${KEEPER_IMAGE:-clickhouse/clickhouse-keeper}:${KEEPER_VERSION:-head-alpine}
+    volumes:
+      - ./:/var/log/clickhouse-keeper/
+      - ./keeper_config.xml:/etc/clickhouse-keeper/conf.d/keeper_config.xml
+    healthcheck:
+      test: bash -c 'if [[ "$$(echo ruok | nc 127.0.0.1 9181)" == "imok" ]]; then exit 0; else exit 1; fi'
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 2s

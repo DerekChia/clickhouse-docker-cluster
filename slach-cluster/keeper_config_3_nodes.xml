@@ -1,0 +1,18 @@
+<clickhouse>
+    <include_from>/tmp/clickhouse-keeper/config.d/generated-keeper-settings.xml</include_from>
+    <logger>
+        <level>trace</level>
+        <console>true</console>
+    </logger>
+    <listen_host>0.0.0.0</listen_host>
+    <keeper_server incl="keeper_server">
+        <path>/var/lib/clickhouse-keeper</path>
+        <tcp_port>9181</tcp_port>
+        <four_letter_word_white_list>*</four_letter_word_white_list>
+        <coordination_settings>
+            <!-- <raft_logs_level>trace</raft_logs_level> -->
+            <raft_logs_level>information</raft_logs_level>
+        </coordination_settings>
+    </keeper_server>
+
+</clickhouse>
