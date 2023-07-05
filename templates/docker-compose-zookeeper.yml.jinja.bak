@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+{%- for n in range(hostnames | length) %} 
+  {{ hostnames[n] }}:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:{{ version }}
+    cpus: {{ cpus }}
+    mem_limit: {{ mem_limit }}
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: {{ hostnames[n] }}
+    hostname: {{ hostnames[n] }}
+    volumes:
+      - type: volume
+        source: {{ hostnames[n] }}-config
+        target: /var/lib/clickhouse
+      - "./configs/{{ hostnames[n] }}:/etc/clickhouse-server/config.d/"
+{% endfor -%}
+
+volumes:
+{% for hostname in hostnames %} {{ hostname }}-config:
+{% endfor %}

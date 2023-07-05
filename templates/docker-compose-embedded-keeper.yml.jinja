@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  {%- for n in range(keeper_hostnames | length) %} 
+  {{ keeper_hostnames[n] }}:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:{{ version }}
+    cpus: {{ cpus }}
+    mem_limit: {{ mem_limit }}
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: {{ keeper_hostnames[n] }}
+    hostname: {{ keeper_hostnames[n] }}
+    volumes:
+      - ./configs/{{ keeper_hostnames[n] }}:/etc/clickhouse-server/config.d/
+  {% endfor %}
+  
+  {%- for n in range(node_hostnames | length) %} 
+  {{ node_hostnames[n] }}:
+    restart: unless-stopped
+    image: clickhouse/clickhouse-server:{{ version }}
+    cpus: {{ cpus }}
+    mem_limit: {{ mem_limit }}
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    container_name: {{ node_hostnames[n] }}
+    hostname: {{ node_hostnames[n] }}
+    volumes:
+      - ./configs/{{ node_hostnames[n] }}:/etc/clickhouse-server/config.d/
+    healthcheck:
+      test: curl -f http://localhost:8123/ping
+      interval: 3s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
+  {% endfor %}
+  prometheus:
+    restart: unless-stopped
+    image: prom/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - "./configs/prometheus/prometheus_config.yml:/etc/prometheus/prometheus.yml"
+    depends_on:
+    {%- for keeper_hostname in keeper_hostnames %} 
+      - {{ keeper_hostname }}
+    {%- endfor -%}
+    {%- for node_hostname in node_hostnames %} 
+      - {{ node_hostname }}
+    {%- endfor %}
+  
+  grafana:
+    restart: unless-stopped
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+      - GF_LOG_LEVEL=debug
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_ALERTING_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    volumes:
+      - "./configs/grafana/clickhouse-datasource.yml:/etc/grafana/provisioning/datasources/clickhouse-datasource.yml"
+      - "./configs/grafana/clickhouse-dashboard.yml:/etc/grafana/provisioning/dashboards/clickhouse-dashboard.yml"
+      - "./configs/grafana/dashboards:/var/lib/grafana/dashboards"
+    depends_on:
+    {%- for keeper_hostname in keeper_hostnames %} 
+      - {{ keeper_hostname }}
+    {%- endfor -%}
+    {%- for node_hostname in node_hostnames %} 
+      - {{ node_hostname }}
+    {%- endfor -%}
