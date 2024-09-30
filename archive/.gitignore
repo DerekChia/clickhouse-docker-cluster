@@ -1,6 +1,3 @@
-cluster_*
-.vscode
-
 # exclude everything
 cluster/*
 
