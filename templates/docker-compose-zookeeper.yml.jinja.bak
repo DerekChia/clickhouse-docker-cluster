@@ -3,6 +3,8 @@ services:
   {{ hostnames[n] }}:
     restart: unless-stopped
     image: clickhouse/clickhouse-server:{{ version }}
+    labels:
+    - "type=experiment"
     cpus: {{ cpus }}
     mem_limit: {{ mem_limit }}
     ulimits:

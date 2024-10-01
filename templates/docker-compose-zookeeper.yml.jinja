@@ -53,6 +53,8 @@ services:
   prometheus:
     restart: unless-stopped
     image: prom/prometheus:latest
+    labels:
+    - "type=experiment"
     container_name: prometheus
     hostname: prometheus
     ports:
@@ -70,6 +72,8 @@ services:
   grafana:
     restart: unless-stopped
     image: grafana/grafana:latest
+    labels:
+    - "type=experiment"
     container_name: grafana
     hostname: grafana
     ports:
@@ -95,6 +99,8 @@ services:
 
   cadvisor: 
     image: gcr.io/cadvisor/cadvisor-arm64:0.99-porterdavid 
+    labels:
+    - "type=experiment"
     container_name: cadvisor
     privileged: true
     ports: 
@@ -107,8 +113,11 @@ services:
       - /dev/disk/:/dev/disk:ro
     depends_on: 
       - redis 
+  
   redis: 
     image: redis:latest 
+    labels:
+    - "type=experiment"
     container_name: redis 
     ports: 
       - 6379:6379 
