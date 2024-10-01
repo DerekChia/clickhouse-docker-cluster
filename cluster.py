@@ -240,7 +240,7 @@ class Cluster:
         if self.args.shard == 0 or self.args.replica == 0:  # only keepers
             if self.args.keeper_mode == "chkeeper":
                 template = environment.get_template(
-                    f"docker-compose-clickhousekeeper-only.yml.jinja"
+                    "docker-compose-clickhousekeeper-only.yml.jinja"
                 )
             elif self.args.keeper_mode == "zookeeper":
                 template = environment.get_template(
@@ -249,11 +249,15 @@ class Cluster:
         else:  # CH with keepers
             if self.args.keeper_mode == "chkeeper":
                 template = environment.get_template(
-                    f"docker-compose-clickhousekeeper.yml.jinja"
+                    "docker-compose-clickhousekeeper.yml.jinja"
                 )
             elif self.args.keeper_mode == "zookeeper":
                 template = environment.get_template(
                     "docker-compose-zookeeper.yml.jinja"
+                )
+            elif self.args.keeper_mode == "embedded": # todo
+                template = environment.get_template(
+                    "docker-compose-embedded-keeper.yml.jinja"
                 )
 
         filename = f"{self.args.cluster_directory}/docker-compose.yml"
@@ -268,9 +272,7 @@ class Cluster:
             loader=FileSystemLoader(f"{Path(__file__).parent}/templates/configs/")
         )
 
-        context = (
-            self.objs_to_context()
-        )  # duplicated, to update - let's not generated twice
+        context = self.objs_to_context() # duplicated, to update - let's not generated twice
         keeper_hostnames = context["keeper_hostnames"]
         node_hostnames = context["node_hostnames"]
         all_hostnames = keeper_hostnames + node_hostnames
