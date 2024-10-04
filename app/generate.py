@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("--memory", type=str, default="8192m", help="RAM (mb) for each node")
 
     # keeper_mode
+    parser.add_argument("--keeper-version", type=str, default="24.8", help="ClickHouse Keeper version")
     parser.add_argument("--keeper-mode", type=str, choices=["chkeeper", "zookeeper", "embedded"], help="chkeeper, zookeeper, embedded")
     parser.add_argument("--keeper-count", type=int, default=3, help="Number of Keepers (Min. 3)")
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     if args.keeper_mode == "chkeeper":
         setattr(args, "keeper_prefix", "chkeeper")
         setattr(args, "keeper_port", 9181)
-        setattr(args, "keeper_version", "24.8")
+        setattr(args, "keeper_version", args.keeper_version)
         setattr(args, "keeper_prometheus_port", 9363)
     elif args.keeper_mode == "zookeeper":
         setattr(args, "keeper_prefix", "zookeeper")
